@@ -1,0 +1,28 @@
+import numpy as np
+import Env
+
+class Agent():
+    def __init__(self,alpha,env):
+        self.env = env#交互环境
+        self.alpha = alpha #学习率
+        self.value_matrix = np.zeros(env.env_size)
+
+
+    def iteration(self,episodes):
+        state,state_p = None,None
+        for e in range(episodes):
+            state,reward,done,info = self.env.reset()
+            state_p = state
+            while not done:
+                action = self.env.action_spaces.sample()
+                state,reward,done,info = self.env.step(action)
+                #use td method update value matrix
+                self.value_matrix[state_p] += self.alpha*(reward+self.value_matrix[state]-\
+                                                          self.value_matrix[state_p])
+                state_p = state
+            print("iteration:",e)
+
+env = Env.Env()
+agent = Agent(0.1,env)
+agent.iteration(100)
+print(agent.value_matrix)
