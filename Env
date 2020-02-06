@@ -1,0 +1,47 @@
+from gym import spaces
+
+class Env_line():
+    def __init__(self):
+        self.action_spaces = spaces.Discrete(2)
+        self.start = 3
+        self.goal = 6
+        self.end = [0,6]
+        self.env_size = 7
+    def reset(self):
+        self.state = self.start
+        done = False
+        reward = 0
+        info = {"state":"begin"}
+        return self.state,reward,done,info
+    def step(self,action):
+        done,reward,info = None,None,None
+        if action == 0:
+            self.state = self.state - 1#left
+        elif action == 1:
+            self.state = self.state + 1#right
+
+        #是否回合结束
+        if self.state==0 or self.state == 6:
+            done = True
+        else:
+            done = False
+
+        #奖励
+        if self.state == 6:
+            reward = 1
+        else:
+            reward = 0
+        #info
+        info = {"state":self.state,"action":action,"reward":reward}
+
+        return self.state,reward,done,info
+    def render(self):
+        for i in range(self.env_size):
+            if i == self.state:
+                print("*",end="")
+            elif i==0:
+                print("0",end="")
+            elif i==6:
+                print("$",end="\n")
+            else:
+                print("+",end="")
